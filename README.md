@@ -1,5 +1,11 @@
 <img width="200" alt="Aster" src="https://github.com/user-attachments/assets/a337e975-996d-4672-a92b-b809591f389a" />
 
+[![CI](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/codeql.yml)
+[![Package updates](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/update.yml/badge.svg?branch=main)](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/update.yml)
+[![Nix flake](https://img.shields.io/badge/Nix-flake-5277C3?logo=nixos&logoColor=white)](https://wiki.nixos.org/wiki/Flakes)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+
 Aster for Nix packages Aster Mail and Aster Bridge for NixOS and any Linux system that runs Nix. Each package installs the same signed Linux build that we publish on GitHub, and it's pinned by its hash, so Nix refuses any file that doesn't match the release.
 
 You can sign up at [aster.cx](https://aster.cx). A phone number and recovery email are not required.
