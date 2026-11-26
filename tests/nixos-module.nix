@@ -50,10 +50,11 @@ let
 
   unit = evaluated.config.systemd.user.units."aster-bridge.service".text;
 in
-assert failed_assertions {
-  listen = "0.0.0.0";
-  secretKeyFile = "/run/secrets/aster-bridge.key";
-} == [ ];
+assert
+  failed_assertions {
+    listen = "0.0.0.0";
+    secretKeyFile = "/run/secrets/aster-bridge.key";
+  } == [ ];
 assert rejects { secretKeyFile = "${builtins.storeDir}/aster-bridge.key"; } "secretKeyFile";
 assert rejects {
   tlsCertFile = "/run/secrets/cert.pem";
