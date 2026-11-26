@@ -30,7 +30,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for script in pkgs/by-name/*/*/update.sh; do
+          for script in pkgs/*/update.sh; do
             bash "$script"
           done
       - name: Update nixpkgs
@@ -38,8 +38,8 @@ jobs:
       - name: Describe the update
         id: describe
         run: |
-          mail="$(jq -r .version pkgs/by-name/as/aster-mail/sources.json)"
-          bridge="$(jq -r .version pkgs/by-name/as/aster-bridge/sources.json)"
+          mail="$(jq -r .version pkgs/aster-mail/sources.json)"
+          bridge="$(jq -r .version pkgs/aster-bridge/sources.json)"
           if git diff --quiet -- pkgs; then
             title="chore(deps): update nixpkgs"
           elif git diff --quiet -- flake.lock; then

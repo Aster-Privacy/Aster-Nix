@@ -24,7 +24,7 @@
       build_packages =
         pkgs:
         lib.genAttrs package_names (
-          name: pkgs.callPackage ./pkgs/by-name/${builtins.substring 0 2 name}/${name}/package.nix { }
+          name: pkgs.callPackage ./pkgs/${name}/package.nix { }
         );
     in
     {
