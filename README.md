@@ -1,4 +1,6 @@
-<img width="200" alt="Aster" src="https://github.com/user-attachments/assets/a337e975-996d-4672-a92b-b809591f389a" />
+<p align="left">
+  <img width="200" alt="Aster" src="https://github.com/user-attachments/assets/a337e975-996d-4672-a92b-b809591f389a" />
+</p>
 
 [![CI](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Aster-Privacy/Aster-Nix/actions/workflows/codeql.yml)
