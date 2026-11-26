@@ -22,10 +22,7 @@
       ];
 
       build_packages =
-        pkgs:
-        lib.genAttrs package_names (
-          name: pkgs.callPackage ./pkgs/${name}/package.nix { }
-        );
+        pkgs: lib.genAttrs package_names (name: pkgs.callPackage ./pkgs/${name}/package.nix { });
     in
     {
       overlays.default = final: _prev: build_packages final;

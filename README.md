@@ -14,7 +14,7 @@ You can sign up at [aster.cx](https://aster.cx). A phone number and recovery ema
 
 ## How it works
 
-Nix keeps the apps up to date. Every six hours, a workflow in this repository checks for new releases, updates the versions and hashes, and merges the change after the builds pass. A new release usually reaches this flake within a few hours of shipping.
+Nix keeps the apps up to date. Every six hours, a workflow in this repository checks for new releases, updates the versions and hashes, and merges the change after the builds pass. Before it accepts a release, it checks the GitHub build attestation on every file, which proves the file was built by that release's own workflow from the tagged source. If any file fails this check, the update stops. A new release usually reaches this flake within a few hours of shipping.
 
 In Aster Mail versions after 1.4.89 and Aster Bridge versions after 1.0.18, the updater built into each app turns off when Nix installs it. Earlier versions can still tell you that an update is available. Install updates through Nix rather than from the app, because Nix doesn't manage a copy that the app installs itself. To stop these notices in Aster Mail, go to **Settings > Updates** and turn off **Check for updates automatically**.
 
