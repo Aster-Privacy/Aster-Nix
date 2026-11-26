@@ -25,8 +25,6 @@ in
       description = "Aster Bridge";
       documentation = [ "https://github.com/Aster-Privacy/Aster-Bridge" ];
       wantedBy = [ "default.target" ];
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
       inherit (service) environment serviceConfig;
     };
   };
