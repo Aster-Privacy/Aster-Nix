@@ -1,0 +1,21 @@
+name: Dependabot merge
+
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  merge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'Aster-Privacy/Aster-Nix'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Merge once checks pass
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge "$PR_URL" --auto --squash --delete-branch
