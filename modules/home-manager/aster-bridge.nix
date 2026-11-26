@@ -25,7 +25,6 @@ in
       Unit = {
         Description = "Aster Bridge";
         Documentation = [ "https://github.com/Aster-Privacy/Aster-Bridge" ];
-        After = [ "network-online.target" ];
       };
       Service = service.serviceConfig // {
         Environment = lib.mapAttrsToList (name: value: "${name}=${value}") service.environment;
