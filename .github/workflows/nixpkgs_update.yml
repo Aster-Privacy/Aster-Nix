@@ -1,0 +1,108 @@
+name: Update the nixpkgs packages
+
+on:
+  schedule:
+    - cron: "47 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nixpkgs-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.repository == 'Aster-Privacy/Aster-Nix'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    outputs:
+      mail: ${{ steps.update.outputs.mail }}
+      bridge: ${{ steps.update.outputs.bridge }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: cachix/install-nix-action@382a9ed9481c7c1f94f68b72ef105b3417c73877 # v32.1.0
+      - name: Update and verify the sources
+        id: update
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git clone --quiet --depth 1 --branch nixos-unstable https://github.com/NixOS/nixpkgs.git "$RUNNER_TEMP/nixpkgs"
+          bash nixpkgs/scripts/update.sh "$RUNNER_TEMP/nixpkgs"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nixpkgs-packages
+          path: |
+            nixpkgs/pkgs/by-name/as/aster-bridge-cli/package.nix
+            nixpkgs/pkgs/by-name/as/aster-bridge/package.nix
+            nixpkgs/pkgs/by-name/as/aster-mail/package.nix
+          if-no-files-found: error
+          retention-days: 3
+
+  pull-request:
+    needs: update
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Remove the merged update branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/$GITHUB_REPOSITORY/branches/chore/nixpkgs-update" --silent 2>/dev/null; then
+            open="$(gh pr list --repo "$GITHUB_REPOSITORY" --head chore/nixpkgs-update --state open --json number --jq length)"
+            if [ "$open" = "0" ]; then
+              gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/chore/nixpkgs-update"
+            fi
+          fi
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: nixpkgs-packages
+          path: ${{ runner.temp }}/update
+      - name: Apply only version and hash changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE: ${{ runner.temp }}/update
+        run: bash nixpkgs/scripts/accept_update.sh "$UPDATE"
+      - name: Describe the update
+        id: describe
+        env:
+          MAIL: ${{ needs.update.outputs.mail }}
+          BRIDGE: ${{ needs.update.outputs.bridge }}
+        run: |
+          [[ "$MAIL" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ && "$BRIDGE" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          echo "title=chore(nixpkgs): update to mail $MAIL, bridge $BRIDGE" >>"$GITHUB_OUTPUT"
+      - name: Open the pull request
+        id: pr
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
+        with:
+          branch: chore/nixpkgs-update
+          delete-branch: true
+          sign-commits: true
+          add-paths: nixpkgs/pkgs/by-name/as/*/package.nix
+          commit-message: ${{ steps.describe.outputs.title }}
+          title: ${{ steps.describe.outputs.title }}
+          body: Updates the from-source nixpkgs packages to the latest Aster Mail and Aster Bridge releases. Each source is a verified commit on `main`. It merges on its own once the builds pass.
+      - name: Approve the pull request checks
+        if: steps.pr.outputs.pull-request-operation == 'created' || steps.pr.outputs.pull-request-operation == 'updated'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_HEAD: ${{ steps.pr.outputs.pull-request-head-sha }}
+        run: bash .github/scripts/approve_runs.sh chore/nixpkgs-update "$PR_HEAD"
+      - name: Merge once checks pass
+        if: steps.pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.pull-request-number }}
+        run: gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --auto --squash --delete-branch
