@@ -1,13 +1,13 @@
 {
-  "version": "1.4.90",
+  "version": "1.4.91",
   "assets": {
     "x86_64-linux": {
       "arch": "amd64",
-      "hash": "sha256-ESTtEMt0wViLn/E5DcGNzqCm63O28ksgOYRZ0ITBdxc="
+      "hash": "sha256-ai1R/iZWGH9CbBmdIdq2rLmlgxlJkt+MQuqfEjr74+k="
     },
     "aarch64-linux": {
       "arch": "arm64",
-      "hash": "sha256-RFvefIrjwY1bRH1oTKn75ezWJUVysIuG7BTAqa9AdEA="
+      "hash": "sha256-VwQHL3a9dvRa79ZNWApKSKcSu1HYO0txsHpnFMNw8nU="
     }
   }
 }
