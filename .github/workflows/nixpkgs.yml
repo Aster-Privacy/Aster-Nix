@@ -96,11 +96,11 @@ jobs:
         working-directory: ${{ runner.temp }}/nixpkgs
         env:
           PACKAGE: ${{ matrix.package }}
-        run: nix-build --no-out-link --print-build-logs -A "$PACKAGE"
+        run: nix-build --no-out-link -A "$PACKAGE"
       - name: Run the NixOS test
         if: matrix.system == 'x86_64-linux' && matrix.package == 'aster-bridge-cli'
         working-directory: ${{ runner.temp }}/nixpkgs
-        run: nix-build --no-out-link --print-build-logs -A nixosTests.aster-bridge
+        run: nix-build --no-out-link -A nixosTests.aster-bridge
 
   nixpkgs:
     needs: [changes, build]
