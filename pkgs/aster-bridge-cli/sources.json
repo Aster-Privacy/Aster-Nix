@@ -1,13 +1,13 @@
 {
-  "version": "1.0.18",
+  "version": "1.0.19",
   "assets": {
     "x86_64-linux": {
       "target": "x86_64-unknown-linux-gnu",
-      "hash": "sha256-+uiErLN52g+bRW7AHEX3wNWBud81QcFX+W2HSmdbapE="
+      "hash": "sha256-9XjTCRfJANz4cO72c0vc2JtvoARsf4USIhLFjmzQfVI="
     },
     "aarch64-linux": {
       "target": "aarch64-unknown-linux-gnu",
-      "hash": "sha256-j1JyflWNLURsKhBBFKJO9+M31eYYozapsI8b+Cg8HRk="
+      "hash": "sha256-iSD1lX61jc7Ve4h7+1nd1DRazzPwXUZi7KMx42Vzpxk="
     }
   }
 }
