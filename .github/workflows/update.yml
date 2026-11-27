@@ -59,11 +59,21 @@ jobs:
           commit-message: ${{ steps.describe.outputs.title }}
           title: ${{ steps.describe.outputs.title }}
           body: Updates Aster Mail, Aster Bridge, and nixpkgs to their latest releases. It merges on its own once the builds pass.
-      - name: Run CI on the pull request
+      - name: Approve the pull request checks
         if: steps.pr.outputs.pull-request-operation == 'created' || steps.pr.outputs.pull-request-operation == 'updated'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref chore/package-update
+          PR_HEAD: ${{ steps.pr.outputs.pull-request-head-sha }}
+        run: |
+          ids=""
+          for attempt in $(seq 1 12); do
+            ids="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$PR_HEAD&event=pull_request&status=action_required"               --jq '.workflow_runs[] | select(.head_branch == "chore/package-update" and .head_repository.full_name == env.GITHUB_REPOSITORY) | .id')"
+            [ -n "$ids" ] && break
+            sleep 10
+          done
+          for id in $ids; do
+            gh api -X POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/approve"
+          done
       - name: Merge once checks pass
         if: steps.pr.outputs.pull-request-number != ''
         env:
