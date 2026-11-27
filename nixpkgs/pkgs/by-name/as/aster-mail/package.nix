@@ -22,13 +22,13 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "aster-mail";
-  version = "1.4.90";
+  version = "1.4.91";
 
   src = fetchFromGitHub {
     owner = "Aster-Privacy";
     repo = "Aster-Mail";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-BF2hhoUGSErKW+EHEiHHDfgITBgwpfmNeoaHLGRbgTs=";
+    hash = "sha256-yxYNTvEOBkvuN7WUNusH07TCBhW1YK/nbX4UQIaV8mQ=";
   };
 
   postPatch = ''
@@ -42,13 +42,13 @@ stdenv.mkDerivation (finalAttrs: {
   cargoDeps = rustPlatform.fetchCargoVendor {
     inherit (finalAttrs) pname version src;
     sourceRoot = "${finalAttrs.src.name}/${finalAttrs.cargoRoot}";
-    hash = "sha256-2ni4mCEMbS/DD01fJ1zqeDL+zOFQmB8gZ+PdApyFpkA=";
+    hash = "sha256-Nb+TpJW2HbuGpNPkGjxkhvFI8fhaUlP8d0YGKk6sC10=";
   };
 
   npmDeps = fetchNpmDeps {
     name = "${finalAttrs.pname}-${finalAttrs.version}-npm-deps";
     inherit (finalAttrs) src;
-    hash = "sha256-Yqbd1YgNgYc3HRoKehUCpZLLsUO9OWgBiiP+Px7yBn4=";
+    hash = "sha256-XS1Eept2ZeXFXdMZTNuEax45yBpwkse5l5QzuVzRmys=";
   };
   npmFlags = [ "--ignore-scripts" ];
 
